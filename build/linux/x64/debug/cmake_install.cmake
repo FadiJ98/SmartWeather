@@ -1,8 +1,8 @@
-# Install script for directory: /home/river/src/ou/3370/namer_app/linux
+# Install script for directory: /home/river/src/ou/3370/SmartWeather/linux
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle")
+  set(CMAKE_INSTALL_PREFIX "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -44,103 +44,103 @@ endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Runtime" OR NOT CMAKE_INSTALL_COMPONENT)
   
-  file(REMOVE_RECURSE "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/")
+  file(REMOVE_RECURSE "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/")
   
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Runtime" OR NOT CMAKE_INSTALL_COMPONENT)
-  if(EXISTS "$ENV{DESTDIR}/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/namer_app" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/namer_app")
+  if(EXISTS "$ENV{DESTDIR}/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/namer_app" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/namer_app")
     file(RPATH_CHECK
-         FILE "$ENV{DESTDIR}/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/namer_app"
+         FILE "$ENV{DESTDIR}/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/namer_app"
          RPATH "$ORIGIN/lib")
   endif()
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/namer_app")
+   "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/namer_app")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle" TYPE EXECUTABLE FILES "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/intermediates_do_not_run/namer_app")
-  if(EXISTS "$ENV{DESTDIR}/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/namer_app" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/namer_app")
+  file(INSTALL DESTINATION "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle" TYPE EXECUTABLE FILES "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/intermediates_do_not_run/namer_app")
+  if(EXISTS "$ENV{DESTDIR}/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/namer_app" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/namer_app")
     file(RPATH_CHANGE
-         FILE "$ENV{DESTDIR}/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/namer_app"
-         OLD_RPATH "/home/river/src/ou/3370/namer_app/linux/flutter/ephemeral:"
+         FILE "$ENV{DESTDIR}/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/namer_app"
+         OLD_RPATH "/home/river/src/ou/3370/SmartWeather/linux/flutter/ephemeral:"
          NEW_RPATH "$ORIGIN/lib")
     if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/namer_app")
+      execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/namer_app")
     endif()
   endif()
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Runtime" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/data/icudtl.dat")
+   "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/data/icudtl.dat")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/data" TYPE FILE FILES "/home/river/src/ou/3370/namer_app/linux/flutter/ephemeral/icudtl.dat")
+  file(INSTALL DESTINATION "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/data" TYPE FILE FILES "/home/river/src/ou/3370/SmartWeather/linux/flutter/ephemeral/icudtl.dat")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Runtime" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/lib/libflutter_linux_gtk.so")
+   "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/lib/libflutter_linux_gtk.so")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/lib" TYPE FILE FILES "/home/river/src/ou/3370/namer_app/linux/flutter/ephemeral/libflutter_linux_gtk.so")
+  file(INSTALL DESTINATION "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/lib" TYPE FILE FILES "/home/river/src/ou/3370/SmartWeather/linux/flutter/ephemeral/libflutter_linux_gtk.so")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Runtime" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/lib/")
+   "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/lib/")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/lib" TYPE DIRECTORY FILES "/home/river/src/ou/3370/namer_app/build/native_assets/linux/")
+  file(INSTALL DESTINATION "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/lib" TYPE DIRECTORY FILES "/home/river/src/ou/3370/SmartWeather/build/native_assets/linux/")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Runtime" OR NOT CMAKE_INSTALL_COMPONENT)
   
-  file(REMOVE_RECURSE "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/data/flutter_assets")
+  file(REMOVE_RECURSE "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/data/flutter_assets")
   
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Runtime" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/data/flutter_assets")
+   "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/data/flutter_assets")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/bundle/data" TYPE DIRECTORY FILES "/home/river/src/ou/3370/namer_app/build//flutter_assets")
+  file(INSTALL DESTINATION "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/bundle/data" TYPE DIRECTORY FILES "/home/river/src/ou/3370/SmartWeather/build//flutter_assets")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/river/src/ou/3370/namer_app/build/linux/x64/debug/flutter/cmake_install.cmake")
-  include("/home/river/src/ou/3370/namer_app/build/linux/x64/debug/runner/cmake_install.cmake")
+  include("/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/flutter/cmake_install.cmake")
+  include("/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/runner/cmake_install.cmake")
 
 endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/install_local_manifest.txt"
+  file(WRITE "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
 if(CMAKE_INSTALL_COMPONENT)
@@ -156,6 +156,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/home/river/src/ou/3370/namer_app/build/linux/x64/debug/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "/home/river/src/ou/3370/SmartWeather/build/linux/x64/debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

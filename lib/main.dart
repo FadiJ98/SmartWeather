@@ -39,6 +39,7 @@ class MyHomePage extends StatelessWidget {
         children: [
           Text('A random idea:'),
           Text(appState.current.asLowerCase),
+            // ...
         ],
       ),
     );
