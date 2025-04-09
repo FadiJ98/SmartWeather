@@ -1,5 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, Text, View} from 'react-native';
+import {StyleSheet, ActivityIndicator, FlatList, Text, View} from 'react-native';
+
+const styles = StyleSheet.create({
+    thewholeshit: {
+        backgroundColor: 'lightskyblue',
+        height: '100%',
+    },
+    container: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        //backgroundColor: 'lightskyblue',
+        height: '20%',
+    },
+    text: {
+        fontSize: 30,
+    },
+});
 
 export default function App () {
     const [data, setData] = useState([]);
@@ -26,8 +42,10 @@ export default function App () {
     }, []);
 
     return (
-        <View style={{flex: 1, padding: 24}}>
-            <Text>{data}</Text>
+        <View style={styles.thewholeshit}>
+            <View style={styles.container}>
+                <Text style={styles.text}>{data}</Text>
+            </View>
         </View>
     );
 };
