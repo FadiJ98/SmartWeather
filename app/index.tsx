@@ -15,12 +15,15 @@ const stylesDay = StyleSheet.create({
     text: {
         fontSize: 30,
     },
+    icontext: {
+        fontSize: 24,
+    },
     header: {
         fontSize: 40,
     },
     image: {
-        width:  200,
-        height: 200,
+        width:  240,
+        height: 240,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -38,6 +41,9 @@ const stylesCloudy = StyleSheet.create({
         height: '20%',
     },
     text: {
+        fontSize: 30,
+    },
+    icontext: {
         fontSize: 30,
     },
     header: {
@@ -64,11 +70,15 @@ const stylesNight = StyleSheet.create({
     },
     text: {
         fontSize: 30,
-        texColor: '#fff',
+        color: '#fff',
+    },
+    icontext: {
+        fontSize: 30,
+        color: '#000',
     },
     header: {
         fontSize: 40,
-        fontColor: '#fff',
+        color: '#fff',
     },
     image: {
         width:  200,
@@ -138,9 +148,16 @@ export default function App () {
     var thestyle = stylesDay;
     const sunIcon = require('../assets/images/sun.png');
     const cloudIcon = require('../assets/images/cloud.png');
+    const rainIcon = require('../assets/images/rain.png');
+    const moonIcon = require('../assets/images/moon.png');
     var theicon = sunIcon;
     if(thedata.data[8] > 32){
         thestyle = stylesNight;
+        theicon = moonIcon;
+    }
+    else if (thedata.data[8] > 11){
+        thestyle = stylesCloudy;
+        theicon = rainIcon;
     }
     else if (thedata.data[8] > 6){
         thestyle = stylesCloudy;
@@ -148,6 +165,7 @@ export default function App () {
     }
     else{
         thestyle = stylesDay;
+        theicon = sunIcon;
     }
     console.log(thedata);
     console.log(thestyle);
@@ -155,10 +173,10 @@ export default function App () {
         <View style={thestyle.thewholeshit}>
             <Text style={thestyle.header}>{thedata.data[6]}</Text>
             <ImageBackground source={theicon} style={thestyle.image}>
-                <Text style={thestyle.text}>{thedata.data[0]} {thedata.data[1]}</Text>
+                <Text style={thestyle.icontext}>{thedata.data[0]} {thedata.data[1]}</Text>
+                <Text style={thestyle.icontext}>{thedata.data[7]} </Text>
             </ImageBackground>
             <Text style={thestyle.text}>🕓 {thedata.data[2]}</Text>
-            <Text style={thestyle.text}>💨 {thedata.data[7]} </Text>
             <Text style={thestyle.text}>💨 {thedata.data[3]} {thedata.data[4]} {thedata.data[5]}</Text>
             <TextInput style={{backgroundColor: 'white'}} onChangeText={newText => setText(newText)} />
             <Button text="Refresh" onPress={({text}) => setRefetch(!refetch)} />
