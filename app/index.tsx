@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, ActivityIndicator, FlatList, Text, View, Image, ImageBackground, Dimensions} from 'react-native';
+import {StyleSheet, ActivityIndicator, FlatList, Text, View, Image, ImageBackground, Dimensions, Button, TextInput} from 'react-native';
 
 const styles = StyleSheet.create({
     thewholeshit: {
@@ -15,9 +15,14 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 30,
     },
+    header: {
+        fontSize: 40,
+    },
     image: {
         width:  200,
         height: 200,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 
@@ -37,22 +42,34 @@ function success(pos){
     console.log(`${crd.longitude}`);
 }
 
-export default function App () {
-    console.log(navigator.geolocation.getCurrentPosition(success,error,options));
-    const [data, setData] = useState([]);
+function test(){
+}
 
-    const getWeather = async () => {
+export default function App () {
+    //console.log(navigator.geolocation.getCurrentPosition(success,error,options));
+    const [data, setData] = useState([]);
+    const [refetch, setRefetch] = useState(false); 
+    const [text, setText] = useState('');
+    //setText(48003);
+
+    const getWeather = async (zipcode) => {
+        console.log(zipcode.text);
         try {
-            //const response = await fetch('http://dataservice.accuweather.com/forecasts/v1/daily/1day/333697?apikey=ebVzkgYiQZd9KbWc0FLaPc3xx4mU4NCY&language=en-us&details=true&metric=true', {
-            const response = await fetch('http://dataservice.accuweather.com/forecasts/v1/hourly/1hour/333697?apikey=ebVzkgYiQZd9KbWc0FLaPc3xx4mU4NCY&language=en-US&details=true&metric=false', {
+            var locationApiUrl = "http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=ebVzkgYiQZd9KbWc0FLaPc3xx4mU4NCY&q=".concat(zipcode.text, "&language=en-US&details=true");
+            const responseL = await fetch(locationApiUrl, {
                 method: 'GET',
             });
-          const json = await response.json();
-          console.log(json[0]['Temperature'].Value );
-          console.log(json[0]['Temperature'].Value );
-          const temp = json[0]['Temperature'].Value;
-          const datetime = json[0].DateTime;
-          setData("".concat(temp,"degrees, ",datetime));
+            jsonL = await responseL.json();
+            console.log(jsonL[0]);
+            locationKey = jsonL[0].ParentCity.Key;
+            var forecastApiUrl = "http://dataservice.accuweather.com/forecasts/v1/hourly/1hour/".concat(locationKey, "?apikey=ebVzkgYiQZd9KbWc0FLaPc3xx4mU4NCY&language=en-US&details=true&metric=false");
+            const responseW = await fetch(forecastApiUrl, {
+                method: 'GET',
+            });
+          const json = await responseW.json();
+          //console.log(json[0]);
+          const thedata = [json[0].Temperature.Value, json[0].Temperature.Unit, json[0].DateTime, json[0].Wind.Speed.Value,json[0].Wind.Speed.Unit, json[0].Wind.Direction.Localized, jsonL[0].ParentCity.LocalizedName]
+          setData(thedata);
         }
         catch (error) {
           console.error(error);
@@ -60,18 +77,24 @@ export default function App () {
     };
 
     useEffect(() => {
-        getWeather();
-    }, []);
+        getWeather({text});
+    }, [refetch]);
 
-    const logo_width = Dimensions.get('screen').width * 0.4;
-    const logo_height = Dimensions.get('screen').height * 0.4;
+
+    const thedata = {data};
+    //console.log(thedata);
+    //const temp = thedata.data['RealFeelTemperature'].data.Value;
     return (
         <View style={styles.thewholeshit}>
-                  <ImageBackground source={require('../assets/images/sun.png')} style={styles.image}>
-                    <Text>Inside</Text>
-                  </ImageBackground>
-                  <Text style={styles.text}>{data}</Text>
-            </View>
+            <Text style={styles.header}>{thedata.data[6]}</Text>
+            <ImageBackground source={require('../assets/images/sun.png')} style={styles.image}>
+                <Text style={styles.text}>{thedata.data[0]} {thedata.data[1]}</Text>
+            </ImageBackground>
+            <Text style={styles.text}>🕓 {thedata.data[2]}</Text>
+            <Text style={styles.text}>💨 {thedata.data[3]} {thedata.data[4]} {thedata.data[5]}</Text>
+            <TextInput style={{backgroundColor: 'white'}} onChangeText={newText => setText(newText)} />
+            <Button text="Refresh" onPress={({text}) => setRefetch(!refetch)} />
+        </View>
     );
 };
 
