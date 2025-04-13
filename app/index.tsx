@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, ActivityIndicator, FlatList, Text, View, Image, ImageBackground, Dimensions, Button, TextInput} from 'react-native';
 
-const styles = StyleSheet.create({
+const stylesDay = StyleSheet.create({
     thewholeshit: {
         backgroundColor: 'lightskyblue',
         height: '100%',
@@ -17,6 +17,58 @@ const styles = StyleSheet.create({
     },
     header: {
         fontSize: 40,
+    },
+    image: {
+        width:  200,
+        height: 200,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+});
+
+const stylesCloudy = StyleSheet.create({
+    thewholeshit: {
+        backgroundColor: 'lightgrey',
+        height: '100%',
+    },
+    container: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        //backgroundColor: 'lightskyblue',
+        height: '20%',
+    },
+    text: {
+        fontSize: 30,
+    },
+    header: {
+        fontSize: 40,
+    },
+    image: {
+        width:  200,
+        height: 200,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+});
+
+const stylesNight = StyleSheet.create({
+    thewholeshit: {
+        backgroundColor: '#141a24',
+        height: '100%',
+    },
+    container: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        //backgroundColor: 'lightskyblue',
+        height: '20%',
+    },
+    text: {
+        fontSize: 30,
+        texColor: '#fff',
+    },
+    header: {
+        fontSize: 40,
+        fontColor: '#fff',
     },
     image: {
         width:  200,
@@ -67,8 +119,9 @@ export default function App () {
                 method: 'GET',
             });
           const json = await responseW.json();
+          console.log(json[0]);
           //console.log(json[0]);
-          const thedata = [json[0].Temperature.Value, json[0].Temperature.Unit, json[0].DateTime, json[0].Wind.Speed.Value,json[0].Wind.Speed.Unit, json[0].Wind.Direction.Localized, jsonL[0].ParentCity.LocalizedName]
+          const thedata = [json[0].Temperature.Value, json[0].Temperature.Unit, json[0].DateTime, json[0].Wind.Speed.Value,json[0].Wind.Speed.Unit, json[0].Wind.Direction.Localized, jsonL[0].ParentCity.LocalizedName, json[0].IconPhrase, json[0].WeatherIcon]
           setData(thedata);
         }
         catch (error) {
@@ -82,16 +135,31 @@ export default function App () {
 
 
     const thedata = {data};
-    //console.log(thedata);
-    //const temp = thedata.data['RealFeelTemperature'].data.Value;
+    var thestyle = stylesDay;
+    const sunIcon = require('../assets/images/sun.png');
+    const cloudIcon = require('../assets/images/cloud.png');
+    var theicon = sunIcon;
+    if(thedata.data[8] > 32){
+        thestyle = stylesNight;
+    }
+    else if (thedata.data[8] > 6){
+        thestyle = stylesCloudy;
+        theicon = cloudIcon;
+    }
+    else{
+        thestyle = stylesDay;
+    }
+    console.log(thedata);
+    console.log(thestyle);
     return (
-        <View style={styles.thewholeshit}>
-            <Text style={styles.header}>{thedata.data[6]}</Text>
-            <ImageBackground source={require('../assets/images/sun.png')} style={styles.image}>
-                <Text style={styles.text}>{thedata.data[0]} {thedata.data[1]}</Text>
+        <View style={thestyle.thewholeshit}>
+            <Text style={thestyle.header}>{thedata.data[6]}</Text>
+            <ImageBackground source={theicon} style={thestyle.image}>
+                <Text style={thestyle.text}>{thedata.data[0]} {thedata.data[1]}</Text>
             </ImageBackground>
-            <Text style={styles.text}>🕓 {thedata.data[2]}</Text>
-            <Text style={styles.text}>💨 {thedata.data[3]} {thedata.data[4]} {thedata.data[5]}</Text>
+            <Text style={thestyle.text}>🕓 {thedata.data[2]}</Text>
+            <Text style={thestyle.text}>💨 {thedata.data[7]} </Text>
+            <Text style={thestyle.text}>💨 {thedata.data[3]} {thedata.data[4]} {thedata.data[5]}</Text>
             <TextInput style={{backgroundColor: 'white'}} onChangeText={newText => setText(newText)} />
             <Button text="Refresh" onPress={({text}) => setRefetch(!refetch)} />
         </View>
