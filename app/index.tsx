@@ -96,13 +96,12 @@ export default function App() {
   const getWeather = async (zipcode) => {
     try {
       const locationApiUrl = `https://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${API_KEY}&q=${zipcode.text}&language=en-US&details=true`;
-      const hourlyApiUrl = `https://dataservice.accuweather.com/forecasts/v1/hourly/1hour/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
-      const forecastApiUrl = `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
-
       const responseL = await fetch(locationApiUrl);
       const jsonL = await responseL.json();
 
       const locationKey = await jsonL[0].ParentCity.Key;
+      const hourlyApiUrl = `https://dataservice.accuweather.com/forecasts/v1/hourly/1hour/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
+      const forecastApiUrl = `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
 
       const responseW = await fetch(hourlyApiUrl);
       const json = await responseW.json();
