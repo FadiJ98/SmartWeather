@@ -100,35 +100,21 @@ export default function App() {
   const getWeather = async (zipcode) => {
     try {
       const locationApiUrl = `https://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${API_KEY}&q=${zipcode.text}&language=en-US&details=true`;
+      const responseL = await fetch(locationApiUrl);
+      const jsonL = await responseL.json();
+
       // If city info is incorrect, the code stops
       if (!Array.isArray(jsonL) || jsonL.length === 0 || !jsonL[0].ParentCity) {
         console.warn("Invalid ZIP code or location not found.");
         return;
       }
-
       const locationKey = jsonL[0].ParentCity.Key;
       const hourlyApiUrl = `https://dataservice.accuweather.com/forecasts/v1/hourly/1hour/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
       const forecastApiUrl = `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
 
-      const responseL = await fetch(locationApiUrl);
-      const jsonL = await responseL.json();
-
-
-      // this fetches the weather info
-      const hourlyApiUrl = `https://dataservice.accuweather.com/forecasts/v1/hourly/1hour/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
       const responseW = await fetch(hourlyApiUrl);
       const json = await responseW.json();
 
-      // if data is incorrect, this will stop
-      if (!json || !json[0] || !json[0].Temperature || !json[0].Wind) {
-        console.warn("Missing hourly forecast data");
-
-        const forecastApiUrl = `https://dataservice.accuweather.com/forecasts/v1/daily/10day/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
-        const responseF = await fetch(forecastApiUrl);
-        const jsonF = await responseF.json();
-        setDailyForecast(jsonF.DailyForecasts);
-        return;
-      }
 
       // collection of weather info
       const thedata = [
@@ -143,6 +129,11 @@ export default function App() {
         json[0].WeatherIcon
       ];
       setData(thedata);
+      //
+      // if data is incorrect, this will stop
+      if (!json || !json[0] || !json[0].Temperature || !json[0].Wind) {
+        console.warn("Missing hourly forecast data");
+      }
 
       // Fetch 5-day forecast
       const responseF = await fetch(forecastApiUrl, {
