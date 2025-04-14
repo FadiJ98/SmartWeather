@@ -15,6 +15,9 @@ const stylesDay = StyleSheet.create({
   text: {
     fontSize: 40,
   },
+  icontext: {
+    fontSize: 25,
+  },
   header: {
     fontSize: 40,
   },
@@ -39,6 +42,9 @@ const stylesCloudy = StyleSheet.create({
   },
   text: {
     fontSize: 30,
+  },
+  icontext: {
+    fontSize: 25,
   },
   header: {
     fontSize: 40,
@@ -66,6 +72,9 @@ const stylesNight = StyleSheet.create({
     fontSize: 30,
     color: '#fff',
   },
+  icontext: {
+    fontSize: 25,
+  },
   header: {
     fontSize: 40,
     color: '#fff',
@@ -91,9 +100,6 @@ export default function App() {
   const getWeather = async (zipcode) => {
     try {
       const locationApiUrl = `https://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${API_KEY}&q=${zipcode.text}&language=en-US&details=true`;
-      const responseL = await fetch(locationApiUrl);
-      const jsonL = await responseL.json();
-
       // If city info is incorrect, the code stops
       if (!Array.isArray(jsonL) || jsonL.length === 0 || !jsonL[0].ParentCity) {
         console.warn("Invalid ZIP code or location not found.");
@@ -101,6 +107,12 @@ export default function App() {
       }
 
       const locationKey = jsonL[0].ParentCity.Key;
+      const hourlyApiUrl = `https://dataservice.accuweather.com/forecasts/v1/hourly/1hour/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
+      const forecastApiUrl = `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
+
+      const responseL = await fetch(locationApiUrl);
+      const jsonL = await responseL.json();
+
 
       // this fetches the weather info
       const hourlyApiUrl = `https://dataservice.accuweather.com/forecasts/v1/hourly/1hour/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
@@ -132,9 +144,11 @@ export default function App() {
       ];
       setData(thedata);
 
-      // Fetch 10-day forecast
-      const forecastApiUrl = `https://dataservice.accuweather.com/forecasts/v1/daily/10day/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
-      const responseF = await fetch(forecastApiUrl);
+      // Fetch 5-day forecast
+      const responseF = await fetch(forecastApiUrl, {
+        method: 'GET',
+      });
+
       const jsonF = await responseF.json();
       setDailyForecast(jsonF.DailyForecasts);
 
@@ -170,12 +184,12 @@ export default function App() {
 
       {/* Weather Icon & Temp */}
       <ImageBackground source={theicon} style={thestyle.image}>
-        <Text style={thestyle.text}>{thedata.data[0]} {thedata.data[1]}</Text>
+        <Text style={thestyle.icontext}>{thedata.data[0]} {thedata.data[1]}</Text>
+        <Text style={thestyle.icontext}> {thedata.data[7]}</Text>
       </ImageBackground>
 
       {/* Time & Wind Info */}
       <Text style={thestyle.text}>🕓 {thedata.data[2]}</Text>
-      <Text style={thestyle.text}>💨 {thedata.data[7]}</Text>
       <Text style={thestyle.text}>💨 {thedata.data[3]} {thedata.data[4]} {thedata.data[5]}</Text>
 
       {/* ZIP Code Input & Refresh */}
@@ -190,7 +204,7 @@ export default function App() {
       {/* Daily Forecast Section */}
       {dailyForecast.length > 0 && (
         <>
-          <Text style={{ fontSize: 24, fontWeight: 'bold', marginTop: 20, marginBottom: 10, textAlign: 'center' }}>10-Day Forecast</Text>
+          <Text style={{ fontSize: 24, fontWeight: 'bold', marginTop: 20, marginBottom: 10, textAlign: 'center' }}>5-Day Forecast</Text>
           <FlatList
             data={dailyForecast}
             keyExtractor={(item) => item.Date}
