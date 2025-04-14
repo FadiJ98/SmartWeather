@@ -75,7 +75,6 @@ const stylesNight = StyleSheet.create({
   },
 });
 
-
 const API_KEY = 'ebVzkgYiQZd9KbWc0FLaPc3xx4mU4NCY';
 
 export default function App() {
@@ -90,11 +89,27 @@ export default function App() {
       const responseL = await fetch(locationApiUrl);
       const jsonL = await responseL.json();
 
+      if (!Array.isArray(jsonL) || jsonL.length === 0 || !jsonL[0].ParentCity) {
+        console.warn("Invalid ZIP code or location not found.");
+        return;
+      }
+
       const locationKey = jsonL[0].ParentCity.Key;
 
       const hourlyApiUrl = `https://dataservice.accuweather.com/forecasts/v1/hourly/1hour/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
       const responseW = await fetch(hourlyApiUrl);
       const json = await responseW.json();
+
+      if (!json || !json[0] || !json[0].Temperature || !json[0].Wind) {
+        console.warn("Missing or malformed hourly forecast data");
+
+        // Still fetch 10-day forecast even if hourly fails
+        const forecastApiUrl = `https://dataservice.accuweather.com/forecasts/v1/daily/10day/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
+        const responseF = await fetch(forecastApiUrl);
+        const jsonF = await responseF.json();
+        setDailyForecast(jsonF.DailyForecasts);
+        return;
+      }
 
       const thedata = [
         json[0].Temperature.Value,
@@ -157,26 +172,34 @@ export default function App() {
       />
       <Button title="Refresh" onPress={() => setRefetch(!refetch)} />
 
-      <Text style={{ fontSize: 24, fontWeight: 'bold', marginTop: 20, marginBottom: 10, textAlign: 'center' }}>10-Day Forecast</Text>
-      <FlatList
-        data={dailyForecast}
-        keyExtractor={(item) => item.Date}
-        contentContainerStyle={{ paddingHorizontal: 20 }}
-        renderItem={({ item }) => (
-          <View style={{
-            backgroundColor: '#ffffffaa',
-            marginBottom: 10,
-            padding: 10,
-            borderRadius: 10,
-          }}>
-            <Text style={{ fontWeight: 'bold' }}>{item.Date.split('T')[0]}</Text>
-            <Text>🌞 Day: {item.Day.IconPhrase}</Text>
-            <Text>🌜 Night: {item.Night.IconPhrase}</Text>
-            <Text>⬆️ Max: {item.Temperature.Maximum.Value}°{item.Temperature.Maximum.Unit}</Text>
-            <Text>⬇️ Min: {item.Temperature.Minimum.Value}°{item.Temperature.Minimum.Unit}</Text>
-          </View>
-        )}
-      />
+      {dailyForecast.length > 0 && (
+        <>
+          <Text style={{ fontSize: 24, fontWeight: 'bold', marginTop: 20, marginBottom: 10, textAlign: 'center' }}>10-Day Forecast</Text>
+          <FlatList
+            data={dailyForecast}
+            keyExtractor={(item) => item.Date}
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+            renderItem={({ item }) => {
+              if (!item || !item.Temperature || !item.Temperature.Maximum || !item.Temperature.Minimum || !item.Day || !item.Night) return null;
+
+              return (
+                <View style={{
+                  backgroundColor: '#ffffffaa',
+                  marginBottom: 10,
+                  padding: 10,
+                  borderRadius: 10,
+                }}>
+                  <Text style={{ fontWeight: 'bold' }}>{item.Date.split('T')[0]}</Text>
+                  <Text>🌞 Day: {item.Day.IconPhrase}</Text>
+                  <Text>🌜 Night: {item.Night.IconPhrase}</Text>
+                  <Text>⬆️ Max: {item.Temperature.Maximum.Value}°{item.Temperature.Maximum.Unit}</Text>
+                  <Text>⬇️ Min: {item.Temperature.Minimum.Value}°{item.Temperature.Minimum.Unit}</Text>
+                </View>
+              );
+            }}
+          />
+        </>
+      )}
     </View>
   );
 }
