@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, FlatList, Text, View, ImageBackground, Button, TextInput } from 'react-native';
+import * as Location from 'expo-location';
 
-// Style type = Day
 const stylesDay = StyleSheet.create({
-  thewholeshit: { // whole app background
+  thewholeshit: {
     backgroundColor: 'lightskyblue',
     height: '100%',
   },
@@ -13,23 +13,22 @@ const stylesDay = StyleSheet.create({
     height: '20%',
   },
   text: {
-    fontSize: 40,
+    fontSize: 24,
   },
   icontext: {
-    fontSize: 25,
+    fontSize: 30,
   },
   header: {
-    fontSize: 40,
+    fontSize: 32,
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
     justifyContent: 'center',
     alignItems: 'center',
   },
 });
 
-// Style type = cloud
 const stylesCloudy = StyleSheet.create({
   thewholeshit: {
     backgroundColor: 'lightgrey',
@@ -41,26 +40,25 @@ const stylesCloudy = StyleSheet.create({
     height: '20%',
   },
   text: {
-    fontSize: 30,
+    fontSize: 24,
   },
   icontext: {
-    fontSize: 25,
+    fontSize: 30,
   },
   header: {
-    fontSize: 40,
+    fontSize: 32,
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
     justifyContent: 'center',
     alignItems: 'center',
   },
 });
 
-// style type = night
 const stylesNight = StyleSheet.create({
   thewholeshit: {
-    backgroundColor: '#141a24',
+    backgroundColor: '#0e131b',
     height: '100%',
   },
   container: {
@@ -69,54 +67,71 @@ const stylesNight = StyleSheet.create({
     height: '20%',
   },
   text: {
-    fontSize: 30,
+    fontSize: 24,
     color: '#fff',
   },
   icontext: {
-    fontSize: 25,
+    fontSize: 30,
   },
   header: {
-    fontSize: 40,
+    fontSize: 32,
     color: '#fff',
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
     justifyContent: 'center',
     alignItems: 'center',
   },
 });
 
-// API key
-const API_KEY = 'ebVzkgYiQZd9KbWc0FLaPc3xx4mU4NCY';
+const API_KEY = 'OwgzpKMRAg1m9iAfRvwQp1oxE9veh7w8';
 
 export default function App() {
   const [data, setData] = useState([]);
   const [dailyForecast, setDailyForecast] = useState([]);
-  const [refetch, setRefetch] = useState(false);
   const [text, setText] = useState('');
+  const [currentLocation, setCurrentLocation] = useState(null);
 
-  // Fetches weather data based on the entered ZIP code
-  const getWeather = async (zipcode) => {
+  const getWeather = async (input) => {
     try {
-      const locationApiUrl = `https://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${API_KEY}&q=${zipcode.text}&language=en-US&details=true`;
-      const responseL = await fetch(locationApiUrl);
-      const jsonL = await responseL.json();
+      const isLatLong = /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(input.trim());
 
-      // If city info is incorrect, the code stops
-      if (!Array.isArray(jsonL) || jsonL.length === 0 || !jsonL[0].ParentCity) {
-        console.warn("Invalid ZIP code or location not found.");
-        return;
+      let locationKey = '';
+      let cityName = '';
+
+      if (isLatLong) {
+        const geoUrl = `https://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${API_KEY}&q=${input}`;
+        const response = await fetch(geoUrl);
+        const json = await response.json();
+
+        if (!json || !json.Key) {
+          console.warn("Invalid coordinates or location not found.");
+          return;
+        }
+
+        locationKey = json.Key;
+        cityName = json.LocalizedName;
+      } else {
+        const locationApiUrl = `https://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=${API_KEY}&q=${input}&language=en-US&details=true`;
+        const responseL = await fetch(locationApiUrl);
+        const jsonL = await responseL.json();
+
+        if (!Array.isArray(jsonL) || jsonL.length === 0 || !jsonL[0].ParentCity) {
+          console.warn("Invalid ZIP code or location not found.");
+          return;
+        }
+
+        locationKey = jsonL[0].ParentCity.Key;
+        cityName = jsonL[0].ParentCity.LocalizedName;
       }
-      const locationKey = jsonL[0].ParentCity.Key;
+
       const hourlyApiUrl = `https://dataservice.accuweather.com/forecasts/v1/hourly/1hour/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
       const forecastApiUrl = `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationKey}?apikey=${API_KEY}&language=en-US&details=true&metric=false`;
 
       const responseW = await fetch(hourlyApiUrl);
       const json = await responseW.json();
 
-
-      // collection of weather info
       const thedata = [
         json[0].Temperature.Value,
         json[0].Temperature.Unit,
@@ -124,91 +139,118 @@ export default function App() {
         json[0].Wind.Speed.Value,
         json[0].Wind.Speed.Unit,
         json[0].Wind.Direction.Localized,
-        jsonL[0].ParentCity.LocalizedName,
+        cityName,
         json[0].IconPhrase,
         json[0].WeatherIcon
       ];
       setData(thedata);
-      //
-      // if data is incorrect, this will stop
-      if (!json || !json[0] || !json[0].Temperature || !json[0].Wind) {
-        console.warn("Missing hourly forecast data");
-      }
 
-      // Fetch 5-day forecast
-      const responseF = await fetch(forecastApiUrl, {
-        method: 'GET',
-      });
-
+      const responseF = await fetch(forecastApiUrl);
       const jsonF = await responseF.json();
       setDailyForecast(jsonF.DailyForecasts);
-
     } catch (error) {
       console.error(error);
     }
   };
 
-  // will fetch weather when refetch value changes
-  useEffect(() => {
-    if (text) getWeather({ text });
-  }, [refetch]);
+  const fetchCurrentLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      console.warn('Permission to access location was denied');
+      return;
+    }
 
-  // Fallback style and icon
+    const location = await Location.getCurrentPositionAsync({});
+    const coords = `${location.coords.latitude},${location.coords.longitude}`;
+    setCurrentLocation(coords);
+    getWeather(coords);
+  };
+
+  useEffect(() => {
+    fetchCurrentLocation();
+  }, []);
+
   const thedata = { data };
   let thestyle = stylesDay;
   const sunIcon = require('../assets/images/sun.png');
   const cloudIcon = require('../assets/images/cloud.png');
+  const rainIcon = require('../assets/images/rain.png');
+  const moonIcon = require('../assets/images/moon.png');
   let theicon = sunIcon;
 
-  // switch styles based on weather icon number
-  if (thedata.data[8] > 32) {
+  const phrase = (thedata.data[7] || '').toLowerCase();
+
+  if (thedata.data[8] > 32 || phrase.includes('night')) {
     thestyle = stylesNight;
-  } else if (thedata.data[8] > 6) {
+    theicon = moonIcon;
+  } else if (phrase.includes('rain')) {
+    thestyle = stylesCloudy;
+    theicon = rainIcon;
+  } else if (phrase.includes('cloud')) {
     thestyle = stylesCloudy;
     theicon = cloudIcon;
   }
 
+  const extractDate = (iso) => iso?.split('T')[0] || '';
+  const extractTimeZone = (iso) => iso?.split('T')[1] || '';
+
   return (
-    <View style={[thestyle.thewholeshit, { paddingBottom: 150 }]}>
-      {/* City Name */}
-      <Text style={thestyle.header}>{thedata.data[6]}</Text>
+    <View style={[thestyle.thewholeshit, { paddingBottom: 100 }]}>
+      <View style={{ alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
+        <Text style={thestyle.header}>{thedata.data[6]}</Text>
+        <ImageBackground
+          source={theicon}
+          style={[thestyle.image, { justifyContent: 'center', alignItems: 'center' }]}
+        >
+          <Text style={thestyle.icontext}>{thedata.data[0]} {thedata.data[1]}</Text>
+          <Text style={thestyle.icontext}>{thedata.data[7]}</Text>
+        </ImageBackground>
+      </View>
 
-      {/* Weather Icon & Temp */}
-      <ImageBackground source={theicon} style={thestyle.image}>
-        <Text style={thestyle.icontext}>{thedata.data[0]} {thedata.data[1]}</Text>
-        <Text style={thestyle.icontext}> {thedata.data[7]}</Text>
-      </ImageBackground>
+      <View style={{ alignItems: 'center', marginBottom: 20 }}>
+        <Text style={thestyle.text}>📅 {extractDate(thedata.data[2])}</Text>
+        <Text style={thestyle.text}>🕓 {extractTimeZone(thedata.data[2])}</Text>
+        <Text style={thestyle.text}>💨 {thedata.data[3]} {thedata.data[4]} {thedata.data[5]}</Text>
+      </View>
 
-      {/* Time & Wind Info */}
-      <Text style={thestyle.text}>🕓 {thedata.data[2]}</Text>
-      <Text style={thestyle.text}>💨 {thedata.data[3]} {thedata.data[4]} {thedata.data[5]}</Text>
-
-      {/* ZIP Code Input & Refresh */}
       <TextInput
-        style={{ backgroundColor: 'white', width: '80%', padding: 10, marginTop: 10, alignSelf: 'center' }}
-        placeholder="Enter ZIP code"
+        style={{
+          backgroundColor: 'white',
+          width: '80%',
+          padding: 10,
+          alignSelf: 'center',
+          borderRadius: 8,
+        }}
+        placeholder="Enter ZIP code or coordinates (lat,long)"
         value={text}
-        onChangeText={newText => setText(newText)}
+        onChangeText={(newText) => setText(newText)}
       />
-      <Button title="Refresh" onPress={() => setRefetch(!refetch)} />
 
-      {/* Daily Forecast Section */}
+      <View style={{ width: '25%', alignSelf: 'center', marginVertical: 10 }}>
+        <Button title="Search" onPress={() => getWeather(text)} />
+      </View>
+
       {dailyForecast.length > 0 && (
-        <>
-          <Text style={{ fontSize: 24, fontWeight: 'bold', marginTop: 20, marginBottom: 10, textAlign: 'center' }}>5-Day Forecast</Text>
+        <View style={{ marginTop: 20 }}>
+            <Text style={[thestyle.text, { fontWeight: 'bold', textAlign: 'center', marginBottom: 10 }]}>
+              5-Day Forecast
+            </Text>
           <FlatList
             data={dailyForecast}
+            horizontal
             keyExtractor={(item) => item.Date}
             contentContainerStyle={{ paddingHorizontal: 20 }}
+            showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => {
               if (!item || !item.Temperature || !item.Temperature.Maximum || !item.Temperature.Minimum || !item.Day || !item.Night) return null;
 
               return (
                 <View style={{
                   backgroundColor: '#ffffffaa',
-                  marginBottom: 10,
-                  padding: 10,
+                  marginRight: 10,
+                  padding: 15,
                   borderRadius: 10,
+                  width: 250,
                 }}>
                   <Text style={{ fontWeight: 'bold' }}>{item.Date.split('T')[0]}</Text>
                   <Text>🌞 Day: {item.Day.IconPhrase}</Text>
@@ -219,8 +261,11 @@ export default function App() {
               );
             }}
           />
-        </>
+        </View>
       )}
     </View>
   );
 }
+
+
+
